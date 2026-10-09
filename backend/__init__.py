@@ -1,0 +1,1 @@
+"""SeedGuard FastAPI backend."""

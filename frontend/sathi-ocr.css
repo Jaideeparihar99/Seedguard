@@ -1,0 +1,11 @@
+.sathi-screenshot-tools{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:10px;padding:13px;border:1px solid #e5ebe2;border-radius:8px;background:#f8faf6}
+.sathi-screenshot-tools.full{grid-column:1/-1}
+.sathi-screenshot-tools>div:first-child{min-width:0}
+.sathi-screenshot-tools b{display:block;color:#315e3f;font-size:10px}
+.sathi-screenshot-tools p{margin:4px 0 0;color:#7c887e;font-size:9px;line-height:1.5}
+.sathi-screenshot-picker{padding:8px 11px;border:1px solid #cbd9ca;border-radius:5px;background:#fff;color:#426c4d;font:600 9px "DM Sans",sans-serif;cursor:pointer}
+.sathi-screenshot-picker:hover{background:#f0f5eb}
+.sathi-screenshot-tools .full{grid-column:1/-1}
+.sathi-screenshot-tools .ocr-suggestions{margin:0;padding-top:10px}
+.sathi-screenshot-tools .ocr-raw{margin:0}
+@media(max-width:760px){.sathi-screenshot-tools{grid-template-columns:1fr 1fr}.sathi-screenshot-tools>div:first-child,.sathi-screenshot-tools .full{grid-column:1/-1}.sathi-screenshot-tools>.ocr-button{width:100%}}

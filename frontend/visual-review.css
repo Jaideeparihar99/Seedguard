@@ -1,0 +1,38 @@
+.visual-review {
+  margin: 10px 0;
+  padding: 12px;
+  border: 1px solid #e6e9df;
+  border-radius: 8px;
+  background: #f9faf6;
+}
+
+.visual-review legend {
+  padding: 0 4px;
+  color: #3d5646;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.visual-review p {
+  margin: 0 0 8px;
+  color: #78847b;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.visual-review label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 5px 0;
+  color: #4f6054;
+  font-size: 9px;
+  line-height: 1.45;
+  cursor: pointer;
+}
+
+.visual-review input {
+  margin: 1px 0 0;
+  accent-color: #28734b;
+  flex: none;
+}

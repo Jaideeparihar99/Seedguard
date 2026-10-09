@@ -1,0 +1,63 @@
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.language-switch {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid #e3e8df;
+  border-radius: 7px;
+  background: #fff;
+}
+
+.language-switch button {
+  border: 0;
+  border-radius: 5px;
+  padding: 5px 8px;
+  background: transparent;
+  color: #68776c;
+  font: 500 10px "DM Sans", sans-serif;
+  cursor: pointer;
+}
+
+.language-switch button[aria-pressed="true"] {
+  background: #eaf1e5;
+  color: #2f6844;
+  font-weight: 700;
+}
+
+html[lang="hi"] body,
+html[lang="hi"] button,
+html[lang="hi"] input,
+html[lang="hi"] select,
+html[lang="hi"] textarea {
+  font-family: "Noto Sans Devanagari", "DM Sans", sans-serif;
+}
+
+html[lang="hi"] h1,
+html[lang="hi"] h2,
+html[lang="hi"] h3,
+html[lang="hi"] h4 {
+  font-family: "Noto Sans Devanagari", Manrope, sans-serif;
+  letter-spacing: -0.5px;
+}
+
+@media (max-width: 700px) {
+  .header-actions {
+    gap: 9px;
+  }
+
+  .topbar-right {
+    gap: 5px;
+    font-size: 9px;
+  }
+
+  .language-switch button {
+    padding: 5px 6px;
+    font-size: 9px;
+  }
+}

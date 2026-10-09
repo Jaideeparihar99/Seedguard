@@ -1,0 +1,14 @@
+{
+  "id": "/",
+  "name": "SeedGuard — Seed check assistant",
+  "short_name": "SeedGuard",
+  "description": "Review seed packet details and save your check to this device.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f6f5ef",
+  "theme_color": "#f6f5ef",
+  "icons": [
+    { "src": "/seedguard-icon.svg", "sizes": "192x192 512x512", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

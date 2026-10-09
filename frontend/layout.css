@@ -1,0 +1,31 @@
+@media (min-width: 701px) {
+  .layout {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 30px;
+    width: calc(100% - 48px);
+    max-width: 960px;
+    margin: 52px auto 70px;
+  }
+
+  .intro {
+    padding-top: 0;
+  }
+
+  .intro-copy {
+    max-width: 650px;
+  }
+
+  .trust-note {
+    max-width: 560px;
+  }
+
+  .steps {
+    margin-top: 32px;
+  }
+
+  .panel {
+    width: 100%;
+  }
+}

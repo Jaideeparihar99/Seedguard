@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f5ef">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>SeedGuard — Seed check</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/seedguard-icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/ocr.css">
+  <link rel="stylesheet" href="/layout.css?v=2">
+  <link rel="stylesheet" href="/functions.css?v=2">
+  <link rel="stylesheet" href="/trace-check.css?v=4">
+  <link rel="stylesheet" href="/sathi-ocr.css?v=1">
+  <link rel="stylesheet" href="/hero.css?v=3">
+  <link rel="stylesheet" href="/visual-review.css?v=1">
+  <link rel="stylesheet" href="/language.css?v=1">
+  <link rel="stylesheet" href="/offline.css?v=2">
+  <link rel="stylesheet" href="/report.css?v=1">
+  <link rel="stylesheet" href="/plan.css?v=1">
+  <link rel="stylesheet" href="/germination.css?v=1">
+  <link rel="stylesheet" href="/concern.css?v=1">
+  <link rel="stylesheet" href="/testing-pathways.css?v=1">
+  <link rel="stylesheet" href="/seed-standards.css?v=2">
+  <style>
+    @media (min-width: 701px) {
+      main.layout {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        width: calc(100% - 48px) !important;
+        max-width: 960px !important;
+        margin: 52px auto 70px !important;
+        gap: 30px !important;
+      }
+      main.layout > .panel { width: 100% !important; }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@7.0.0/dist/tesseract.min.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><span class="brand-mark">S</span><span>seed<span class="brand-light">guard</span></span></a>
+    <div class="header-actions">
+      <div class="language-switch" role="group" aria-label="Choose language">
+        <button type="button" data-language="en" aria-pressed="true">English</button>
+        <button type="button" data-language="hi" aria-pressed="false">हिंदी</button>
+      </div>
+      <div class="topbar-right"><span class="status-dot"></span><span>Seed check assistant</span></div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="intro">
+      <div class="eyebrow"><span class="eyebrow-line"></span> A clearer choice starts here</div>
+      <h1>Know your seed<br><span>before it goes in the soil.</span></h1>
+      <p class="intro-copy">Review the packet, price and source in one place. Get practical signals and a next step you can act on.</p>
+      <div class="trust-note"><span class="shield">✳</span><span><strong>Decision support, with care.</strong><br>This check can flag concerns. It cannot certify seed or predict germination.</span></div>
+      <div class="steps"><div class="step active"><span>01</span><div><b>Share details</b><small>Photo and purchase info</small></div></div><div class="step-connector"></div><div class="step"><span>02</span><div><b>Review signals</b><small>Understand what stands out</small></div></div><div class="step-connector"></div><div class="step"><span>03</span><div><b>Choose next step</b><small>Buy, verify or ask more</small></div></div></div>
+    </section>
+
+    <section class="panel" aria-label="Seed check form">
+      <div class="panel-heading"><div><div class="panel-kicker">START A CHECK</div><h2>Tell us about the packet</h2></div><span class="privacy-tag">Private by default</span></div>
+      <p class="panel-sub">Add what you can read. You can still continue if some details are missing.</p>
+      <div class="offline-tools"><p id="offline-status" role="status">Online · packet, SATHI, sowing-plan, sample-log, and concern follow-up text auto-save on this device. Photos are not saved.</p><div><button id="install-app" type="button" hidden>Install SeedGuard</button><button id="clear-drafts" type="button">Clear saved drafts</button></div></div>
+      <form id="seed-form">
+        <div class="section-title"><span class="section-number">1</span><span>Packet photo</span><span class="optional">Optional</span></div>
+        <label class="upload-zone" id="drop-zone" for="image">
+          <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/webp" capture="environment" hidden>
+          <span class="upload-icon" id="upload-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14.5v3A2.5 2.5 0 0 0 7.5 20h9a2.5 2.5 0 0 0 2.5-2.5v-3"/></svg></span>
+          <span class="upload-text"><b id="upload-title">Add a clear packet photo</b><small id="upload-hint">JPG, PNG or WebP · up to 8 MB</small></span>
+          <span class="upload-action">Browse</span>
+        </label>
+        <div class="photo-preview" id="photo-preview" hidden>
+          <img id="preview-image" alt="Preview of the selected seed packet">
+          <div class="preview-meta">
+            <div class="quality-status" id="quality-status"><span class="quality-dot"></span><div><b id="quality-title">Checking photo…</b><small id="quality-detail">Checking size, brightness and detail</small></div></div>
+            <button class="remove-photo" id="remove-photo" type="button" aria-label="Remove packet photo">Remove</button>
+          </div>
+        </div>
+        <fieldset class="visual-review" id="visual-review" hidden>
+          <legend>Quick visual review</legend>
+          <p>Mark anything you notice in the photo. These are your observations; SeedGuard does not detect damage automatically.</p>
+          <label><input type="checkbox" name="visual_flags" value="package_damage"> Packet looks torn, open, or resealed</label>
+          <label><input type="checkbox" name="visual_flags" value="label_damage"> Label looks altered, damaged, or incomplete</label>
+          <label><input type="checkbox" name="visual_flags" value="seed_condition"> Seeds appear discolored, moldy, damaged, or mixed with debris</label>
+        </fieldset>
+        <div class="ocr-box" id="ocr-box" hidden>
+          <div class="ocr-controls"><div><b>Read the packet label</b><small>English OCR suggests label text for your review. The first use downloads the OCR engine.</small></div><button class="ocr-button" id="read-label" type="button">Read label</button></div>
+          <div class="ocr-progress" id="ocr-progress" hidden><div class="progress-track"><span id="ocr-progress-bar"></span></div><small id="ocr-status" role="status">Preparing text recognition…</small></div>
+          <div class="ocr-error" id="ocr-error" role="alert" hidden></div>
+          <div class="ocr-suggestions" id="ocr-suggestions" hidden></div>
+          <details class="ocr-raw" id="ocr-raw-wrap" hidden><summary>Review all recognized text</summary><pre id="ocr-raw" data-no-translate></pre></details>
+        </div>
+        <div class="form-grid">
+          <div class="section-title full"><span class="section-number">2</span><span>What’s on the label?</span></div>
+          <label class="field">Crop<select name="crop" required><option value="">Choose a crop</option><option value="Mustard">Mustard</option><option value="Wheat">Wheat</option><option value="Bajra">Bajra</option><option value="Cotton">Cotton</option><option value="Tomato">Tomato</option></select></label>
+          <label class="field">Variety <span class="optional">Optional</span><input name="variety" placeholder="e.g. HD 2967"></label>
+          <label class="field">Brand / company <span class="optional">Optional</span><input name="brand" placeholder="As printed on the packet"></label>
+          <label class="field">Batch / lot number <span class="optional">Optional</span><input name="batch" placeholder="Enter batch number"></label>
+          <label class="field">Validity / test date <span class="optional">Optional</span><input name="validity" placeholder="e.g. 10/2026"></label>
+          <label class="field">Packing date <span class="optional">Optional</span><input name="packed_on" placeholder="As printed on packet"></label>
+          <label class="field">Test date <span class="optional">Optional</span><input name="test_date" placeholder="As printed on packet"></label>
+          <label class="field">Net weight <span class="optional">Optional</span><input name="weight" placeholder="e.g. 500 g"></label>
+          <label class="field full">Certification text / number <span class="optional">Optional</span><input name="certification" maxlength="140" placeholder="Text or number shown on packet"></label>
+          <div class="section-title full section-spaced"><span class="section-number">3</span><span>Purchase details</span></div>
+          <label class="field">Price paid per pack <span class="unit">INR</span><input name="price" type="number" min="1" step="0.01" placeholder="e.g. 950" required><small class="price-guidance" id="price-guidance" aria-live="polite" hidden></small></label>
+          <label class="field">Quantity <span class="unit">kg</span><input name="quantity" type="number" min="0.01" step="0.01" placeholder="e.g. 1" required></label>
+          <label class="field full">Where are you buying it?<select name="source_type" required><option value="known_retailer">Known retailer / cooperative</option><option value="local_seller">Local seller</option><option value="unknown">I don’t know the source</option></select></label>
+        </div>
+        <p class="form-error" id="form-error" role="alert"></p>
+        <button class="submit-button" id="submit-button" type="submit"><span>Review this seed</span><span class="button-arrow">↗</span></button>
+        <div class="form-foot"><span>⌑</span> OCR runs in your browser. Check details before using the result.</div>
+      </form>
+    </section>
+  </main>
+  <section class="sowing-planner" aria-labelledby="planner-title">
+    <div class="planner-heading"><div><div class="panel-kicker">PLAN YOUR PURCHASE</div><h2 id="planner-title">How much seed will your field need?</h2><p>Use the seed rate printed on the packet or given by your local agriculture expert. We’ll work out pack count and an estimated budget.</p></div><span class="planner-mark" aria-hidden="true">↗</span></div>
+    <form id="plan-form" class="plan-form">
+      <label class="field">Crop<input name="crop" maxlength="60" placeholder="e.g. Wheat" required></label>
+      <label class="field">Variety <span class="optional">Optional</span><input name="variety" maxlength="100" placeholder="As printed on packet"></label>
+      <label class="field">Field area<input name="area" type="number" min="0.001" step="any" placeholder="e.g. 2" required></label>
+      <label class="field">Area unit<select name="area_unit"><option value="acres">Acres</option><option value="hectares">Hectares</option></select></label>
+      <label class="field">Seed rate <span class="unit">kg</span><input name="seed_rate_kg" type="number" min="0.001" step="any" placeholder="From packet / local advice" required></label>
+      <label class="field">Rate is for<select name="rate_unit"><option value="kg_per_acre">kg per acre</option><option value="kg_per_hectare">kg per hectare</option></select></label>
+      <label class="field">One pack contains <span class="unit">kg</span><input name="pack_weight_kg" type="number" min="0.001" step="any" placeholder="e.g. 5" required></label>
+      <label class="field">Price per pack <span class="unit">INR</span><input name="price_per_pack" type="number" min="0.01" step="any" placeholder="e.g. 800" required></label>
+      <label class="plan-save"><input name="save" type="checkbox"><span>Save this plan in SeedGuard history</span></label>
+      <button class="submit-button plan-submit" type="submit"><span>Calculate seed and budget</span><span class="button-arrow">↗</span></button>
+    </form>
+    <p class="plan-error" id="plan-error" role="alert"></p>
+    <div class="plan-result" id="plan-result" aria-live="polite" hidden></div>
+    <div class="plan-history-wrap"><button class="plan-history-toggle" id="load-plans" type="button">Show saved sowing plans</button><div class="plan-history" id="plan-history" hidden></div></div>
+    <p class="planner-note">SeedGuard calculates from the rate you enter. It does not recommend a seed rate; rates change with crop, variety, sowing method, and local conditions. Confirm the rate locally.</p>
+  </section>
+  <section class="germination-check" aria-labelledby="germination-title">
+    <div class="germination-heading"><div><div class="panel-kicker">BEFORE YOU SOW</div><h2 id="germination-title">Record a small seed-sample check</h2><p>Count what grew from a sample and compare it with the packet statement, if shown. This records your observation; it does not grade the packet or the whole lot.</p></div><span class="germination-mark" aria-hidden="true">✳</span></div>
+    <details class="germination-guide"><summary>Simple observation guide</summary><ol><li>Take a random sample from the opened seed lot.</li><li>Place it on a clean, moist towel or cloth. Keep it moist, not waterlogged.</li><li>Check at a time suitable for your crop and count normal seedlings. Ask a local agriculture expert if you are unsure what to count.</li></ol><p>Method and timing vary by crop. <a href="https://icar.org.in/sites/default/files/inline-files/Kharif-agro-advisory-2021-final.pdf" target="_blank" rel="noopener noreferrer">An ICAR soybean advisory gives a soybean-specific example ↗</a></p></details>
+    <form id="germination-form" class="germination-form">
+      <label class="field">Crop<input name="crop" maxlength="60" placeholder="e.g. Wheat" required></label>
+      <label class="field">Variety <span class="optional">Optional</span><input name="variety" maxlength="100" placeholder="As printed on packet"></label>
+      <label class="field">Batch / lot <span class="optional">Optional</span><input name="lot" maxlength="100" placeholder="From the packet"></label>
+      <label class="field">Seeds in your sample<input name="sample_count" type="number" min="1" max="10000" step="1" value="100" required></label>
+      <label class="field">Normal seedlings counted<input name="normal_seedlings_count" type="number" min="0" max="10000" step="1" required><small>Count healthy, normally developed seedlings—not just seeds that started to split.</small></label>
+      <label class="field">Packet germination statement <span class="optional">Optional · %</span><input name="label_germination_percent" type="number" min="0" max="100" step="0.1" placeholder="e.g. 80"></label>
+      <label class="field">Sample started<input name="started_on" type="date" required></label>
+      <label class="field">Counted on<input name="observed_on" type="date" required></label>
+      <label class="field">Method used<select name="method"><option value="paper_towel">Paper towel / tissue</option><option value="jute">Jute / gunny cloth</option><option value="cloth">Other clean cloth</option><option value="other">Other</option></select></label>
+      <label class="field full">Notes <span class="optional">Optional</span><input name="notes" maxlength="500" placeholder="For example: kept near a window; checked after 6 days"></label>
+      <label class="plan-save"><input name="save" type="checkbox"><span>Save this observation in SeedGuard history</span></label>
+      <button class="submit-button germination-submit" type="submit"><span>Calculate sample observation</span><span class="button-arrow">↗</span></button>
+    </form>
+    <p class="germination-error" id="germination-error" role="alert"></p>
+    <div class="germination-result" id="germination-result" aria-live="polite" hidden></div>
+    <div class="germination-history-wrap"><button class="germination-history-toggle" id="load-germination-logs" type="button">Show saved sample observations</button><div class="germination-history" id="germination-history" hidden></div></div>
+    <p class="germination-disclaimer">A small home sample is not an official germination test and may not represent the whole lot or predict field emergence. For a formal result, contact an authorized seed testing laboratory.</p>
+  </section>
+  <section class="trace-check" aria-labelledby="trace-title">
+    <div class="trace-heading"><div><div class="panel-kicker">SATHI RECORD REVIEW · GUIDED LOOKUP</div><h2 id="trace-title">Compare packet details with a SATHI record</h2><p>Look up the tag on the official portal, then enter the record details here. SeedGuard compares what you provide; it does not connect to SATHI automatically.</p></div><a class="trace-link" href="https://seedtrace.gov.in/ms014/seedTrace" target="_blank" rel="noopener noreferrer">Open official SATHI lookup ↗</a></div>
+    <ol class="trace-steps"><li>Enter what is printed on the packet.</li><li>Open SATHI and search using the lot and tag numbers.</li><li>Copy the returned values below to compare.</li></ol>
+    <form id="trace-form" class="trace-form">
+      <div class="sathi-screenshot-tools full">
+        <div><b>Read a SATHI result screenshot</b><p>Choose a screenshot or photo of the official result. SeedGuard suggests fields for your review; it does not authenticate the record. The image is read in this browser and is not sent with your comparison.</p></div>
+        <label class="sathi-screenshot-picker">Choose screenshot<input id="sathi-screenshot" type="file" accept="image/jpeg,image/png,image/webp" hidden></label>
+        <button class="ocr-button" id="read-sathi-result" type="button" disabled>Read SATHI screenshot</button>
+        <div class="ocr-progress full" id="sathi-ocr-progress" hidden><div class="progress-track"><span id="sathi-ocr-progress-bar"></span></div><small id="sathi-ocr-status" role="status">Preparing English text recognition…</small></div>
+        <div class="ocr-error full" id="sathi-ocr-error" role="alert" hidden></div>
+        <div class="ocr-suggestions full" id="sathi-ocr-suggestions" hidden></div>
+        <details class="ocr-raw full" id="sathi-ocr-raw-wrap" hidden><summary>Review all recognized SATHI text</summary><pre id="sathi-ocr-raw" data-no-translate></pre></details>
+      </div>
+      <fieldset><legend>From the seed packet</legend>
+        <label>Crop<input name="p_crop" placeholder="e.g. Wheat"></label>
+        <label>Variety<input name="p_variety" placeholder="As printed"></label>
+        <label>Lot number<input name="p_lot" placeholder="Lot number"></label>
+        <label>Tag number<input name="p_tag" placeholder="Certification tag number"></label>
+        <label>Producer / company<input name="p_producer" placeholder="As printed on packet"></label>
+      </fieldset>
+      <fieldset><legend>From the SATHI result</legend>
+        <label>Crop<input name="r_crop" placeholder="From SATHI"></label>
+        <label>Variety<input name="r_variety" placeholder="From SATHI"></label>
+        <label>Lot number<input name="r_lot" placeholder="From SATHI"></label>
+        <label>Tag number<input name="r_tag" placeholder="From SATHI"></label>
+        <label>Seed producing agency<input name="r_producer" placeholder="From SATHI"></label>
+      </fieldset>
+      <details class="trace-quality-details"><summary>Add seed quality details shown in SATHI</summary><p>Copy any test values exactly as displayed. SeedGuard explains the labels but does not grade these values or predict field performance.</p><div class="trace-quality-grid">
+        <label>Normal germination<input name="q_normal_germination" placeholder="As shown in SATHI"></label>
+        <label>Weed seed / purity<input name="q_weed_seed" placeholder="As shown in SATHI"></label>
+        <label>Other crop seed / purity<input name="q_other_crop_seed" placeholder="As shown in SATHI"></label>
+        <label>Dead seed<input name="q_dead_seed" placeholder="As shown in SATHI"></label>
+        <label>Hard seed<input name="q_hard_seed" placeholder="As shown in SATHI"></label>
+        <label>Insect damage<input name="q_insect_damage" placeholder="As shown in SATHI"></label>
+        <label>Abnormal seed<input name="q_abnormal_seed" placeholder="As shown in SATHI"></label>
+        <label>Diseased seed<input name="q_diseased_seed" placeholder="As shown in SATHI"></label>
+        <label>Nematode galls<input name="q_nematode_galls" placeholder="As shown in SATHI"></label>
+      </div></details>
+      <div class="trace-actions"><p>Only compare details shown in the official result. Leave unavailable fields blank.</p><div class="trace-action-buttons"><button class="trace-scan-open" id="open-trace-scanner" type="button">Scan packet QR / barcode</button><button class="trace-submit" type="submit">Compare details</button></div></div>
+      <p class="trace-error" id="trace-error" role="alert"></p>
+      <div class="trace-scanner" id="trace-scanner" hidden><div class="trace-scanner-top"><b>Scan a code on the packet</b><button type="button" id="close-trace-scanner" aria-label="Close scanner">Close</button></div><video id="trace-camera" playsinline muted></video><p id="trace-scan-status" role="status">Allow camera access and hold the packet code in view.</p></div>
+    </form>
+    <div class="trace-result" id="trace-result" aria-live="polite" hidden></div>
+    <button class="trace-history-toggle" id="load-trace-history" type="button">Show saved SATHI checks</button>
+    <div class="trace-history" id="trace-history" hidden></div>
+    <p class="trace-disclaimer">A match is not proof of seed quality or authenticity. No record found does not by itself prove fraud; the public lookup may have coverage limits.</p>
+  </section>
+  <section class="seed-standards" aria-labelledby="seed-standards-title">
+    <div class="seed-standards-heading"><div><div class="panel-kicker">UNDERSTAND A LAB REPORT</div><h2 id="seed-standards-title">Compare values with a seed standard</h2><p>Choose the crop, seed type and class, then enter values from a lab report or SATHI record. We show the published reference beside each value.</p></div><span class="seed-standards-mark" aria-hidden="true">≋</span></div>
+    <form id="seed-standards-form" class="seed-standards-form">
+      <label class="field">Crop<select name="crop" required><option value="wheat">Wheat</option><option value="cotton">Cotton</option><option value="pearl_millet">Pearl millet (Bajra)</option><option value="tomato">Tomato</option><option value="paddy">Paddy (Rice)</option><option value="maize">Maize</option><option value="soybean">Soybean</option><option value="chickpea">Chickpea (Bengal gram)</option><option value="mustard">Rapeseed / Mustard</option></select></label>
+      <label class="field">Seed type<select name="seed_type"><option value="variety">Variety / open-pollinated</option><option value="hybrid">Hybrid</option></select></label>
+      <label class="field">Seed class<select name="seed_class"><option value="certified">Certified</option><option value="foundation">Foundation</option></select></label>
+      <div id="seed-standard-reference" class="seed-standard-reference full" aria-live="polite"><p class="history-loading">Loading published reference values…</p></div>
+      <fieldset class="seed-standard-values full"><legend>Values printed on your report <span class="optional">Optional · enter only values you can confirm</span></legend>
+        <label>Pure seed<input name="pure_seed_percent" type="number" min="0" max="100" step="any" placeholder="%"></label>
+        <label>Inert matter<input name="inert_matter_percent" type="number" min="0" max="100" step="any" placeholder="%"></label>
+        <label>Germination<input name="normal_germination_percent" type="number" min="0" max="100" step="any" placeholder="%"></label>
+        <label>Moisture<input name="moisture_percent" type="number" min="0" max="100" step="any" placeholder="%"></label>
+        <label>Other crop seeds<input name="other_crop_seeds_per_kg" type="number" min="0" step="any" placeholder="seeds per kg"></label>
+        <label>Weed seeds<input name="weed_seeds_per_kg" type="number" min="0" step="any" placeholder="seeds per kg"></label>
+      </fieldset>
+      <p class="seed-standard-error full" id="seed-standard-error" role="alert"></p>
+      <button class="submit-button seed-standard-submit full" type="submit"><span>Compare report values</span><span class="button-arrow">↗</span></button>
+    </form>
+    <div id="seed-standard-result" class="seed-standard-result" aria-live="polite" hidden></div>
+    <p class="seed-standard-disclaimer">This is an educational comparison to the 2013 manual, not a certification, current legal ruling, quality score or laboratory result. Certification also considers field production, seed identity and other requirements. Confirm the current applicable standard and test units with an authorized seed testing laboratory or certification agency. <a href="https://agriculture.hp.gov.in/wp-content/uploads/2022/03/INDIAN_MINIMUM_SEED_CERTIFICATION_STANDARDS.pdf" target="_blank" rel="noopener noreferrer">Read the Central Seed Certification Board manual ↗</a></p>
+  </section>
+  <section class="concern-log" aria-labelledby="concern-title">
+    <div class="concern-heading"><div><div class="panel-kicker">KEEP A CLEAR RECORD</div><h2 id="concern-title">Something doesn’t look right?</h2><p>Record what you noticed, keep track of evidence, and see practical next steps. A missing or different SATHI entry alone does not prove a problem.</p></div><span class="concern-mark" aria-hidden="true">✳</span></div>
+    <div class="concern-sources"><a href="https://seedtrace.gov.in/ms014/seedTraceOfTLTag" target="_blank" rel="noopener noreferrer">Official SATHI tag / lot lookup ↗</a><a href="https://seedtrace.gov.in/ms014/directoryList" target="_blank" rel="noopener noreferrer">Find an official state contact ↗</a></div>
+    <form id="concern-form" class="concern-form">
+      <input type="hidden" name="related_trace_check_id">
+      <label class="field">Crop<input name="crop" maxlength="60" placeholder="e.g. Wheat" required></label>
+      <label class="field">What did you notice?<select name="concern_type" required><option value="sathi_difference">SATHI details differ from the packet</option><option value="no_sathi_record">No SATHI record was returned</option><option value="packet_label">Packet, seal, tag, or label concern</option><option value="sample_observation">My small sample observation differs</option><option value="other">Something else</option></select></label>
+      <label class="field">Date you noticed it<input name="observed_on" type="date" required></label>
+      <label class="field">Purchase date <span class="optional">Optional</span><input name="purchase_date" type="date"></label>
+      <label class="field">Batch / lot number <span class="optional">Optional</span><input name="lot" maxlength="100" placeholder="As printed on packet"></label>
+      <label class="field">Tag number <span class="optional">Optional</span><input name="tag" maxlength="100" placeholder="As printed on tag"></label>
+      <label class="field">Seller / shop <span class="optional">Optional</span><input name="seller" maxlength="120" placeholder="Shop or seller name"></label>
+      <label class="field">Receipt / bill number <span class="optional">Optional</span><input name="receipt_reference" maxlength="100" placeholder="Reference only; keep original bill"></label>
+      <label class="field full">District <span class="optional">Optional</span><input name="district" maxlength="80" placeholder="Your district"></label>
+      <fieldset class="concern-evidence full"><legend>Evidence you already have</legend><div><label><input type="checkbox" name="evidence" value="packet"> Packet kept</label><label><input type="checkbox" name="evidence" value="tag_photo"> Tag / packet photos</label><label><input type="checkbox" name="evidence" value="receipt"> Purchase receipt</label><label><input type="checkbox" name="evidence" value="sathi_result"> SATHI result / screenshot</label><label><input type="checkbox" name="evidence" value="sample_notes"> Sample observation notes</label></div></fieldset>
+      <label class="field full">What happened? <span class="optional">Optional</span><textarea name="notes" maxlength="1200" rows="4" placeholder="Write only what you observed: dates, details that differ, or what the seller said."></textarea></label>
+      <p class="concern-private full">This record is stored in this app’s local project database. It does not submit a complaint or upload your photos. Avoid entering personal phone numbers or other sensitive information.</p>
+      <p class="concern-error full" id="concern-error" role="alert"></p>
+      <button class="submit-button concern-submit full" type="submit"><span>Save follow-up record</span><span class="button-arrow">↗</span></button>
+    </form>
+    <div class="concern-result" id="concern-result" aria-live="polite" hidden></div>
+    <button class="concern-history-toggle" id="load-concern-records" type="button">Show saved follow-up records</button>
+    <div class="concern-history" id="concern-history" hidden></div>
+    <p class="concern-disclaimer">SeedGuard records your account of events. It cannot establish counterfeiting, test seed quality, or file an official complaint. For formal action, ask the relevant agriculture authority or seed inspector how to proceed.</p>
+  </section>
+  <section class="testing-pathways" aria-labelledby="testing-pathways-title">
+    <div class="testing-pathways-heading"><div><div class="panel-kicker">FOR A FORMAL SEED TEST</div><h2 id="testing-pathways-title">Find the right testing route</h2><p>Check the official central or regional testing centres and find your state’s agriculture contacts. Ask first whether a lab accepts farmer service samples and how to submit one.</p></div><span class="testing-pathways-mark" aria-hidden="true">⌕</span></div>
+    <label class="field testing-state-field">Your state / UT<select id="testing-state" aria-label="Your state / UT"><option value="">Choose a state / UT</option><option value="Andhra Pradesh">Andhra Pradesh</option><option value="Arunachal Pradesh">Arunachal Pradesh</option><option value="Assam">Assam</option><option value="Bihar">Bihar</option><option value="Chhattisgarh">Chhattisgarh</option><option value="Goa">Goa</option><option value="Gujarat">Gujarat</option><option value="Haryana">Haryana</option><option value="Himachal Pradesh">Himachal Pradesh</option><option value="Jharkhand">Jharkhand</option><option value="Karnataka">Karnataka</option><option value="Kerala">Kerala</option><option value="Madhya Pradesh">Madhya Pradesh</option><option value="Maharashtra">Maharashtra</option><option value="Manipur">Manipur</option><option value="Meghalaya">Meghalaya</option><option value="Mizoram">Mizoram</option><option value="Nagaland">Nagaland</option><option value="Odisha">Odisha</option><option value="Punjab">Punjab</option><option value="Rajasthan">Rajasthan</option><option value="Sikkim">Sikkim</option><option value="Tamil Nadu">Tamil Nadu</option><option value="Telangana">Telangana</option><option value="Tripura">Tripura</option><option value="Uttar Pradesh">Uttar Pradesh</option><option value="Uttarakhand">Uttarakhand</option><option value="West Bengal">West Bengal</option><option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option><option value="Chandigarh">Chandigarh</option><option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option><option value="Delhi">Delhi</option><option value="Jammu and Kashmir">Jammu and Kashmir</option><option value="Ladakh">Ladakh</option><option value="Lakshadweep">Lakshadweep</option><option value="Puducherry">Puducherry</option></select></label>
+    <div id="testing-pathway-results" class="testing-pathway-results" aria-live="polite"><p class="history-loading">Loading official testing routes…</p></div>
+    <p class="testing-pathways-disclaimer">These listed centres are not a nearest-lab locator and may not accept farmer service samples. Confirm sample acceptance, quantity, packing, fees, and whether official sampling is needed before sending seed.</p>
+  </section>
+  <section class="result-wrap" id="result-wrap" hidden><div class="result-panel" id="result-panel"></div></section>
+  <section class="saved-checks" id="saved-checks">
+    <div class="saved-checks-heading"><div><div class="panel-kicker">YOUR CHECKS</div><h2>Compare saved options</h2><p>Open an earlier result or select two to four checks to compare.</p></div><button class="load-checks-button" id="load-saved-checks" type="button">Show recent checks</button></div>
+    <div class="saved-checks-list" id="saved-checks-list" hidden></div>
+    <div class="saved-check-detail" id="saved-check-detail" hidden></div>
+    <div class="compare-results" id="compare-results" hidden></div>
+  </section>
+  <footer><span>SEEDGUARD</span><span>See clearly. Decide confidently.</span><span>Built for the field <i>✳</i></span></footer>
+  <section id="print-report" class="print-report" hidden aria-label="Printable SeedGuard report"></section>
+  <script src="/i18n.js?v=13" defer></script>
+  <script src="/sathi-ocr.js?v=1" defer></script>
+  <script src="/app.js?v=19" defer></script>
+</body>
+</html>
+
+
+
